@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" class="platform-web theme-dark theme-darker images-dark density-default font-size-16 has-webkit-scrollbar full-motion visual-refresh enlarge-target-size">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discord Profile Editor</title>
+<meta name="description" content="Unofficial Discord profile editor and previewer built from Discord's own HTML and CSS: themes, decorations, effects, badges, board widgets and more. Not affiliated with Discord Inc.">
+<meta name="theme-color" content="#5865f2">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Discord Profile Editor">
+<meta property="og:description" content="Preview your Discord profile pixel-for-pixel before you change it. Unofficial, not affiliated with Discord Inc.">
+<link rel="stylesheet" href="discord.css">
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+<div id="masks"></div>
+<style id="clientThemeStyle"></style>
+<div class="editor">
+  <form id="controls" class="panel" autocomplete="off" onsubmit="return false">
+    <header class="panel-head">
+      <h1><svg class="clyde" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.21.4-.4.8-.58 1.21-1.69-.25-3.4-.25-5.1 0-.18-.41-.37-.82-.59-1.2-1.6.27-3.14.75-4.6 1.43A19.04 19.04 0 0 0 .96 17.7a18.43 18.43 0 0 0 5.63 2.87c.46-.62.86-1.28 1.2-1.98-.65-.25-1.29-.55-1.9-.92.17-.12.32-.24.47-.37 3.58 1.7 7.7 1.7 11.28 0l.46.37c-.6.36-1.25.67-1.9.92.35.7.75 1.35 1.2 1.98 2.03-.63 3.94-1.6 5.64-2.87.47-4.87-.78-9.09-3.3-12.83ZM8.3 15.12c-1.1 0-2-1.02-2-2.27 0-1.24.88-2.26 2-2.26s2.02 1.02 2 2.26c0 1.25-.89 2.27-2 2.27Zm7.4 0c-1.1 0-2-1.02-2-2.27 0-1.24.88-2.26 2-2.26s2.02 1.02 2 2.26c0 1.25-.88 2.27-2 2.27Z"/></svg><span>Edytor profilu</span><label class="lang"><span class="hiddenVisually_FX8kaC">Język</span><select id="lang"></select></label></h1>
+      <div class="seg" role="radiogroup" aria-label="Widok">
+        <label><input type="radio" name="view" value="modal"><span>Pełny profil</span></label>
+        <label><input type="radio" name="view" value="popout"><span>Wyskakujące okno</span></label>
+      </div>
+    </header>
+    <div class="panel-intro">
+      <p class="notice" role="note">Nieoficjalne narzędzie fanowskie, niezwiązane z Discord Inc. Tylko podgląd – niczego nie zmienia na koncie.</p>
+      <div class="login-card">
+        <button type="button" class="btn primary discord-login" id="loginBtn"><svg class="clyde" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M19.73 4.87a18.2 18.2 0 0 0-4.6-1.44c-.21.4-.4.8-.58 1.21-1.69-.25-3.4-.25-5.1 0-.18-.41-.37-.82-.59-1.2-1.6.27-3.14.75-4.6 1.43A19.04 19.04 0 0 0 .96 17.7a18.43 18.43 0 0 0 5.63 2.87c.46-.62.86-1.28 1.2-1.98-.65-.25-1.29-.55-1.9-.92.17-.12.32-.24.47-.37 3.58 1.7 7.7 1.7 11.28 0l.46.37c-.6.36-1.25.67-1.9.92.35.7.75 1.35 1.2 1.98 2.03-.63 3.94-1.6 5.64-2.87.47-4.87-.78-9.09-3.3-12.83ZM8.3 15.12c-1.1 0-2-1.02-2-2.27 0-1.24.88-2.26 2-2.26s2.02 1.02 2 2.26c0 1.25-.89 2.27-2 2.27Zm7.4 0c-1.1 0-2-1.02-2-2.27 0-1.24.88-2.26 2-2.26s2.02 1.02 2 2.26c0 1.25-.88 2.27-2 2.27Z"/></svg><span>Zaloguj przez Discord</span></button>
+        <div class="login-hint">Pobiera nazwę, awatar, baner, dekorację, tag serwera, styl nazwy, odznaki i połączenia. Token zostaje tylko w tej karcie.</div>
+        <div class="login-status" id="loginStatus" role="status"></div>
+      </div>
+      <div class="todo" id="todo" hidden>
+        <div class="todo-head"><span id="todoTitle"></span><button type="button" class="icon-btn" id="todoClose" aria-label="Zamknij">✕</button></div>
+        <div class="sub">Tego Discord nie udostępnia przez logowanie. Uzupełnij ręcznie:</div>
+        <div class="todo-links" id="todoLinks"></div>
+      </div>
+      <div class="todo diag" id="diag" hidden>
+        <div class="todo-head"><span>Diagnostyka logowania</span><button type="button" class="icon-btn" id="diagClose" aria-label="Zamknij">✕</button></div>
+        <div class="sub">Co dokładnie zwrócił Discord (true = pole jest i ma wartość):</div>
+        <div id="diagRows"></div>
+        <div class="login"><button type="button" class="btn" id="diagCopy">Kopiuj wyniki</button><span class="sub" id="diagCopied"></span></div>
+        <details class="diag-raw"><summary>Surowa odpowiedź API</summary><pre id="diagRaw"></pre></details>
+      </div>
+    </div>
+
+    <details open data-k="basic"><summary>Podstawowe</summary>
+      <label class="f">Wyświetlana nazwa<input id="displayName" maxlength="32"></label>
+      <label class="f">Nazwa użytkownika<input id="username" maxlength="32"></label>
+      <label class="f">Zaimki<input id="pronouns" maxlength="40"></label>
+      <label class="f">O mnie<textarea id="bio" rows="4" maxlength="190"></textarea></label>
+      <div class="row">
+        <label class="f">Status<select id="status">
+          <option value="online">Dostępny</option><option value="idle">Zaraz wracam</option><option value="dnd">Nie przeszkadzać</option>
+          <option value="offline">Niewidoczny</option><option value="streaming">Na żywo</option></select></label>
+        <label class="f narrow">Emoji<input id="statusEmoji" maxlength="8"></label>
+      </div>
+      <label class="f">Status własny<input id="statusText" maxlength="128"></label>
+    </details>
+
+    <details open data-k="avatar"><summary>Awatar</summary>
+      <div id="defaultAvatars" class="swatches"></div>
+      <label class="f">URL obrazu<input id="avatarUrl" placeholder="https://…"></label>
+      <label class="file">Prześlij plik (PNG/JPG/GIF/WEBP)<input id="avatarFile" type="file" accept="image/*"><span class="btn file-pick">Wybierz plik</span></label>
+    </details>
+
+    <details open data-k="deco"><summary>Dekoracja awatara</summary>
+      <label class="check"><input type="checkbox" id="animate"> Animacja</label>
+      <input id="decoSearch" class="search" type="search" placeholder="Szukaj dekoracji…">
+      <div id="decoGrid" class="grid"></div>
+      <label class="f">Własny URL dekoracji (APNG/PNG)<input id="decorationUrl" placeholder="https://cdn.discordapp.com/avatar-decoration-presets/…"></label>
+    </details>
+
+    <details data-k="banner"><summary>Baner</summary>
+      <label class="f">URL obrazu<input id="bannerImageUrl" placeholder="https://…"></label>
+      <div class="row">
+        <label class="file">Prześlij plik<input id="bannerImageFile" type="file" accept="image/*"><span class="btn file-pick">Wybierz plik</span></label>
+        <button type="button" id="bannerImageClear" class="btn">Usuń baner</button>
+      </div>
+      <div class="row">
+        <label class="f narrow">Kolor<input id="bannerColor" type="color"></label>
+        <label class="check"><input type="checkbox" id="bannerAuto"> Kolor z awatara</label>
+      </div>
+    </details>
+
+    <details data-k="theme"><summary>Motyw profilu (Nitro)</summary>
+      <label class="check"><input type="checkbox" id="themeOn"> Włącz kolory motywu</label>
+      <div class="row" data-needs="themeOn">
+        <label class="f narrow">Główny<input id="themePrimary" type="color"></label>
+        <label class="f narrow">Akcent<input id="themeSecondary" type="color"></label>
+      </div>
+      <label class="check" data-needs="themeOn" title="Ustawienie oglądającego: Wygląd → Synchronizuj motywy profili"><input type="checkbox" id="themeSync"> Synchronizuj z motywem klienta</label>
+    </details>
+
+    <details data-k="effect"><summary>Efekt profilu</summary>
+      <div class="row"><input id="effectSearch" class="search" type="search" placeholder="Szukaj efektu…"><button type="button" id="replayEffect" class="btn">Odtwórz</button></div>
+      <div id="effectGrid" class="grid wide"></div>
+    </details>
+
+    <details data-k="name"><summary>Styl wyświetlanej nazwy</summary>
+      <label class="check"><input type="checkbox" id="nameOn"> Włącz styl nazwy</label>
+      <div data-needs="nameOn">
+        <div class="row">
+          <label class="f">Czcionka<select id="nameFont"></select></label>
+          <label class="f">Efekt<select id="nameEffect"></select></label>
+        </div>
+        <div id="nameColors" class="colors"></div>
+      </div>
+    </details>
+
+    <details data-k="badges"><summary>Odznaki i tag serwera</summary>
+      <div id="badges"></div>
+      <div class="sub">Własna odznaka (URL)</div>
+      <div id="customBadges" class="wishes"></div>
+      <label class="f"><input id="cbUrl" placeholder="https://cdn.discordapp.com/badge-icons/…" aria-label="Własna odznaka (URL)"></label>
+      <div class="row">
+        <input id="cbLabel" placeholder="Opis odznaki" aria-label="Opis odznaki" style="flex:1">
+        <button type="button" class="btn" id="cbAdd">Dodaj odznakę</button>
+      </div>
+      <label class="check"><input type="checkbox" id="tagOn"> Tag serwera</label>
+      <div data-needs="tagOn">
+        <label class="f">Tekst tagu<input id="tagText" maxlength="4"></label>
+        <div class="sub">Ikona</div>
+        <div id="tagBadges" class="grid badges-grid"></div>
+        <div class="sub">Kolory</div>
+        <div id="tagPresets" class="presets"></div>
+        <div class="row">
+          <label class="f narrow">Główny<input id="tagPrimary" type="color"></label>
+          <label class="f narrow" id="tagSecondaryWrap">Drugi<input id="tagSecondary" type="color"></label>
+        </div>
+        <label class="f">Własna ikona (URL)<input id="tagBadgeUrl" placeholder="https://cdn.discordapp.com/clan-badges/…"></label>
+        <label class="file">…lub prześlij plik<input id="tagBadgeFile" type="file" accept="image/*"><span class="btn file-pick">Wybierz plik</span></label>
+      </div>
+    </details>
+
+    <details data-k="board"><summary>Tablica i karty</summary>
+      <label class="check"><input type="checkbox" id="showBoard"> Pokaż prawą kolumnę</label>
+      <div data-needs="showBoard">
+        <label class="check"><input type="checkbox" id="showActivityTab"> Karta „Aktywność”</label>
+        <div class="row">
+          <label class="f">Wspólni znajomi<input id="mutualFriends" type="number" min="0" max="999"></label>
+          <label class="f">Wspólne serwery<input id="mutualGuilds" type="number" min="0" max="999"></label>
+        </div>
+        <div class="sub">Widżety tablicy</div>
+        <div id="boardEditor"></div>
+        <button type="button" id="addWidget" class="btn">Dodaj widżet</button>
+      </div>
+    </details>
+
+    <details data-k="wishlist"><summary>Lista życzeń</summary>
+      <div id="wishlistItems" class="wishes"></div>
+      <div class="row">
+        <select id="wishKind" style="flex:0 0 130px"><option value="d">Dekoracje</option><option value="e">Efekty profilu</option></select>
+        <input id="wishSearch" type="search" placeholder="Szukaj w sklepie…">
+      </div>
+      <div id="wishGrid" class="grid"></div>
+    </details>
+
+    <details data-k="sections"><summary>Sekcje</summary>
+      <label class="f">Członek Discorda od<input id="memberSince"></label>
+      <label class="check"><input type="checkbox" id="guildOn"> Oglądane na serwerze (pokaż „Członek od” serwera)</label>
+      <div data-needs="guildOn">
+        <div class="row">
+          <label class="f">Nazwa serwera<input id="guildName" maxlength="100"></label>
+          <label class="f">Dołączono<input id="guildJoined"></label>
+        </div>
+        <label class="f">Ikona serwera (URL)<input id="guildIconUrl" placeholder="https://cdn.discordapp.com/icons/…"></label>
+        <div class="row">
+          <label class="file">Prześlij plik<input id="guildIconFile" type="file" accept="image/*"><span class="btn file-pick">Wybierz plik</span></label>
+          <button type="button" id="guildIconClear" class="btn">Usuń ikonę</button>
+        </div>
+      </div>
+      <label class="f">Znajomi od<input id="friendsSince" placeholder="(puste = ukryte)"></label>
+      <div class="sub">Połączone konta</div>
+      <div id="connections"></div>
+      <button type="button" id="addConnection" class="btn">Dodaj połączenie</button>
+      <label class="check"><input type="checkbox" id="showNote"> Notka</label>
+    </details>
+
+    <details open data-k="client"><summary>Wygląd aplikacji</summary>
+      <div class="sub">Motyw</div>
+      <div id="themeStd" class="theme-swatches" role="radiogroup" aria-label="Motyw"></div>
+      <div class="sub">Kolor <span class="nitro-tag">Nitro</span></div>
+      <div id="themeGrad" class="theme-swatches" role="radiogroup" aria-label="Kolor"></div>
+      <div id="themeCustom" class="widget-edit" hidden>
+        <div class="sub">Własny motyw</div>
+        <div id="customColors" class="colors"></div>
+        <label class="f">Kąt gradientu <output id="customAngleOut"></output><input id="customAngle" type="range" min="0" max="360" step="1"></label>
+        <label class="f">Intensywność koloru <output id="customMixOut"></output><input id="customMix" type="range" min="0" max="100" step="1"></label>
+        <div class="seg" role="radiogroup" aria-label="Tryb">
+          <label><input type="radio" name="customBase" value="light"><span>Jasny</span></label>
+          <label><input type="radio" name="customBase" value="darker"><span>Ciemny</span></label>
+        </div>
+      </div>
+    </details>
+
+    <details data-k="app"><summary>Podgląd</summary>
+      <div class="row">
+        <label class="f">Tło sceny<select id="stageBg"><option value="app">Aplikacja (z motywem)</option><option value="backdrop">Przyciemnione</option><option value="checker">Szachownica</option></select></label>
+      </div>
+      <div class="row">
+        <button type="button" id="exportBtn" class="btn">Eksport JSON</button>
+        <label class="btn file-btn">Import JSON<input id="importFile" type="file" accept="application/json"></label>
+        <button type="button" id="resetBtn" class="btn danger">Reset</button>
+      </div>
+    </details>
+  </form>
+
+  <main id="stage" class="stage">
+    <div id="preview" class="preview"></div>
+    <span id="zoomLabel" class="zoom-label"></span>
+  </main>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/vendor/chroma.min.js"></script>
+<script src="js/color-picker.js"></script>
+<script src="js/client-themes.js"></script>
+<script src="js/guild-tag-badges.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/discord-theme.js"></script>
+<script src="js/templates.js"></script>
+<script>document.getElementById("masks").innerHTML = DiscordTemplates.masks();</script>
+<script src="js/editor.js"></script>
+</body>
+</html>

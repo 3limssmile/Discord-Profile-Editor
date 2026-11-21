@@ -1,0 +1,50 @@
+MIT License
+
+Copyright (c) 2026 elimssmile
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+SCOPE OF THIS LICENSE
+
+The MIT License above covers only the original code of this project: the editor
+logic, the editor stylesheet (editor/editor.css), the build tools in tools/ and
+the documentation.
+
+It does NOT cover, and grants no rights to, material that belongs to Discord Inc.
+or to other third parties, including:
+
+  - editor/discord.css, which is generated from Discord's own stylesheets;
+  - the Discord markup reproduced in editor/js/templates.js;
+  - the fonts in editor/assets/ (*.woff2);
+  - the connection logos in editor/assets/conn/;
+  - the shop catalog, game, badge and server tag data in editor/js/catalog.js,
+    editor/js/guild-tag-badges.js and editor/data/games.js, and the images
+    they point to on Discord's CDN;
+  - the colour presets and formulas ported from the Discord client in
+    editor/js/client-themes.js and editor/js/discord-theme.js;
+  - the Discord name, logo and other trademarks.
+
+"Discord" and the Discord logo are trademarks of Discord Inc. This project is
+not affiliated with, endorsed by or sponsored by Discord Inc.
+
+Third-party library: editor/js/vendor/chroma.min.js (chroma.js) is
+Copyright (c) 2011-2019 Gregor Aisch and is distributed under its own BSD-style
+license, reproduced at the top of that file.

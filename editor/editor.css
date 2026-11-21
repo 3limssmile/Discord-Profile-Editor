@@ -1,0 +1,275 @@
+/* Editor chrome only. Built on Discord's own design tokens from discord.css (control-*, input-*, switch-*, radius-*,
+   background-gradient-* for Nitro colour themes) so it follows the client theme like Discord's settings do.
+   The preview itself is 100% Discord CSS. */
+html, body { height: 100%; margin: 0; }
+body { background: var(--background-gradient-lowest, var(--background-base-lowest)); color: var(--text-default); font-family: var(--font-primary); overflow: hidden; }
+
+.editor { display: grid; grid-template-columns: 360px 1fr; height: 100vh; }
+
+/* ---------- panel (Discord settings sidebar look) ---------- */
+.panel { background: var(--background-gradient-lower, var(--background-base-lower)); border-right: 1px solid var(--border-subtle); overflow-y: auto; overflow-x: hidden; min-width: 0; padding: 0 0 24px; font-size: 14px; line-height: 1.2857; scrollbar-width: thin; scrollbar-color: var(--scrollbar-auto-thumb, var(--background-mod-strong)) transparent; }
+.panel-head { position: sticky; top: 0; z-index: 2; background: var(--background-gradient-lower, var(--background-base-lower)); padding: 16px 16px 12px; border-bottom: 1px solid var(--border-subtle); }
+.panel-head h1 { display: flex; align-items: center; gap: 8px; font-size: 20px; line-height: 24px; font-weight: 600; margin: 0 0 12px; color: var(--text-strong); font-family: var(--font-display); }
+.panel-head h1 .clyde { color: var(--control-brand-foreground, #5865f2); flex: 0 0 auto; }
+
+/* login: Discord brand button, the main call to action */
+.panel-intro { padding: 0 12px; }
+.panel-intro:empty { display: none; }
+.login-card { margin-top: 12px; padding: 12px; border-radius: var(--radius-sm); background: var(--background-base-lowest); border: 1px solid var(--border-subtle); }
+.btn.discord-login { width: 100%; height: 44px; justify-content: center; gap: 10px; font-size: 16px; font-weight: 600; border-radius: var(--radius-sm); }
+.discord-login .clyde { width: 24px; height: 24px; }
+.login-hint { margin-top: 8px; font-size: 12px; line-height: 16px; color: var(--text-muted); }
+.login-status { margin-top: 6px; font-size: 12px; line-height: 16px; color: var(--text-default); }
+.login-status:empty { display: none; }
+.login { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.login .sub { margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.todo { margin-top: 10px; padding: 12px; border-radius: var(--radius-sm); background: var(--background-base-lowest); border: 1px solid var(--border-subtle); }
+.todo-head { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--text-strong); }
+.todo .sub { margin: 4px 0 8px; }
+.todo-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.todo-links .btn { height: 28px; padding: 0 10px; font-size: 12px; }
+.diag #diagRows { display: flex; flex-direction: column; gap: 2px; font-size: 11px; }
+.diag-row { display: grid; grid-template-columns: 1fr auto; column-gap: 8px; padding: 3px 0; border-bottom: 1px solid var(--border-subtle); }
+.diag-k { color: var(--text-default); }
+.diag-row b.ok { color: var(--text-feedback-positive, #3ba55c); }
+.diag-row b.no { color: var(--text-feedback-critical, #ed4245); }
+.diag-v { grid-column: 1 / -1; color: var(--text-muted); font-family: var(--font-code, monospace); word-break: break-all; }
+.panel .diag-raw { border: 0; padding: 0; margin: 0; }
+.diag-raw pre { max-height: 260px; overflow: auto; font-size: 11px; white-space: pre-wrap; word-break: break-all; margin: 0; }
+
+/* sections: cards like Discord's settings groups */
+.panel > details { margin: 12px 12px 0; padding: 0 12px; border-radius: var(--radius-sm); background: var(--background-base-lowest); border: 1px solid var(--border-subtle); }
+.panel > details[open] { padding-bottom: 12px; }
+.panel summary { cursor: pointer; padding: 12px 0; font-size: 16px; line-height: 20px; font-weight: 600; color: var(--text-strong); list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.panel summary::-webkit-details-marker { display: none; }
+.panel > details > summary::after { content: ""; width: 16px; height: 16px; background: var(--icon-subtle, var(--text-muted)); transition: transform .2s ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42Z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42Z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.panel > details:not([open]) > summary::after { transform: rotate(-90deg); }
+.panel summary:hover { color: var(--interactive-hover, var(--text-strong)); }
+.panel [hidden] { display: none !important; }
+
+.f { display: flex; flex-direction: column; gap: 8px; margin: 0 0 12px; font-size: 14px; line-height: 18px; font-weight: 500; color: var(--text-default); flex: 1; min-width: 0; }
+.f output { color: var(--text-muted); font-weight: 400; }
+.f.narrow { flex: 0 0 auto; }
+/* a text input's intrinsic width is ~20ch (Firefox sizes flex items by it): give narrow text fields a fixed width */
+.panel .f.narrow { width: 88px; }
+.panel .f.narrow:has(> input[type=color]) { width: auto; }
+.row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 12px; }
+.row > .f { margin-bottom: 0; }
+.row { flex-wrap: wrap; }
+.row > .file { flex: 1 1 140px; min-width: 0; margin-bottom: 0; }
+.row > .btn, .row > .file-btn, .row > .icon-btn { flex: 0 0 auto; }
+/* fields share the row with their buttons instead of taking 100% and wrapping them onto a new line */
+.panel .row > input:not([type=color]):not([type=file]), .panel .row > select { flex: 1 1 0; min-width: 0; width: auto; margin-bottom: 0; }
+.sub { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--text-muted); margin: 8px 0 6px; }
+
+/* inputs: Discord text input tokens */
+.panel input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]):not([type=range]), .panel select, .panel textarea {
+  font: inherit; font-weight: 400; font-size: 16px; line-height: 20px; color: var(--input-text-default, var(--text-default)); background: var(--input-background-default, var(--background-base-lowest));
+  border: 1px solid var(--input-border-default, var(--border-subtle)); border-radius: var(--radius-sm); padding: 0 12px; height: var(--control-input-height-md, 40px); width: 100%; box-sizing: border-box; outline: none;
+  transition: border-color .2s ease;
+}
+.panel textarea { resize: vertical; height: auto; padding: 10px 12px; }
+.panel input::placeholder, .panel textarea::placeholder { color: var(--input-placeholder-text-default, var(--text-muted)); }
+.panel input:hover, .panel select:hover, .panel textarea:hover { border-color: var(--input-border-hover, var(--border-strong)); }
+.panel input:focus, .panel select:focus, .panel textarea:focus { border-color: var(--input-border-active, var(--text-link)); }
+.panel select { appearance: none; cursor: pointer; padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%2394959c' d='M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; }
+.panel select option { background: var(--background-surface-high, var(--background-base-lowest)); color: var(--text-default); }
+.panel input[type=color] { width: 44px; height: 40px; padding: 3px; border: 1px solid var(--input-border-default, var(--border-subtle)); border-radius: var(--radius-sm); background: var(--input-background-default); cursor: pointer; }
+.panel input[type=range] { width: 100%; accent-color: var(--control-brand-foreground, #5865f2); }
+
+/* checkboxes -> Discord switches (label text left, switch right, like settings rows) */
+.check { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; cursor: pointer; font-size: 14px; line-height: 18px; font-weight: 500; color: var(--text-default); flex-direction: row-reverse; }
+.check input { appearance: none; flex: 0 0 auto; position: relative; width: 40px; height: 24px; margin: 0; border-radius: 12px; cursor: pointer;
+  background: var(--switch-background-default, #72767d); border: 1px solid var(--switch-border-default, transparent); transition: background-color .2s ease; }
+.check input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--switch-thumb-background-default, #fff); transition: transform .2s ease; }
+.check input:checked { background: var(--switch-background-selected-default, #5865f2); border-color: var(--switch-border-selected-default, transparent); }
+.check input:checked::after { transform: translateX(16px); background: var(--switch-thumb-background-selected-default, #fff); }
+.check:hover input:not(:checked) { background: var(--switch-background-hover, var(--switch-background-default)); }
+.check input:focus-visible { outline: 2px solid var(--focus-primary, var(--text-link)); outline-offset: 2px; }
+.check > :not(input) { flex: 1; }
+
+/* file fields: the native input is hidden (its button/text come from the browser's locale and get cut off in Firefox);
+   the label opens it, .file-pick is a Discord secondary button */
+.file { display: block; position: relative; font-size: 14px; font-weight: 500; color: var(--text-default); margin-bottom: 12px; cursor: pointer; }
+.file input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
+.file .file-pick { display: flex; width: fit-content; margin-top: 6px; }
+.file:hover .file-pick { background: var(--control-secondary-background-hover); color: var(--control-secondary-text-hover); }
+.file:focus-within .file-pick { outline: 2px solid var(--focus-primary, var(--text-link)); outline-offset: 2px; }
+.search { margin-bottom: 8px; }
+
+/* buttons: Discord "mana" button tokens */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: inherit; font-size: 14px; line-height: 18px; font-weight: 500; height: 32px; padding: 0 12px; cursor: pointer; white-space: nowrap; box-sizing: border-box;
+  border-radius: var(--radius-sm); border: 1px solid var(--control-secondary-border-default, transparent);
+  background: var(--control-secondary-background-default, #4e5058); color: var(--control-secondary-text-default, var(--text-strong));
+  transition: background-color 50ms ease-in, color 50ms ease-in, border-color 50ms ease-in; }
+.btn:hover { background: var(--control-secondary-background-hover); border-color: var(--control-secondary-border-hover, transparent); color: var(--control-secondary-text-hover); }
+.btn:active { background: var(--control-secondary-background-active); }
+.btn.primary { background: var(--control-primary-background-default, #5865f2); border-color: var(--control-primary-border-default, transparent); color: var(--control-primary-text-default, #fff); }
+.btn.primary:hover { background: var(--control-primary-background-hover); border-color: var(--control-primary-border-hover, transparent); color: var(--control-primary-text-hover, #fff); }
+.btn.primary:active { background: var(--control-primary-background-active); }
+.btn.danger { background: var(--control-critical-primary-background-default, #da373c); border-color: var(--control-critical-primary-border-default, transparent); color: var(--control-critical-primary-text-default, #fff); }
+.btn.danger:hover { background: var(--control-critical-primary-background-hover); color: var(--control-critical-primary-text-hover, #fff); }
+.btn:focus-visible { outline: 2px solid var(--focus-primary, var(--text-link)); outline-offset: 2px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.file-btn { position: relative; overflow: hidden; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.icon-btn { background: none; border: 0; color: var(--icon-subtle, var(--text-muted)); cursor: pointer; padding: 6px; font-size: 14px; border-radius: var(--radius-xs, 4px); }
+.icon-btn:hover { color: var(--interactive-hover, var(--text-strong)); background: var(--background-mod-subtle, transparent); }
+
+.seg { display: flex; background: var(--background-base-lowest); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 3px; }
+/* position: relative keeps the hidden radio inside its label; otherwise it is placed against the page and
+   focusing it (click in Firefox) scrolls the whole window away from the editor */
+.seg label { flex: 1; position: relative; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; text-align: center; padding: 6px 4px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.seg input:checked + span { background: var(--background-mod-strong, #4e5058); color: var(--text-strong); }
+.seg input:focus-visible + span { outline: 2px solid var(--text-link); }
+
+/* client theme picker: round swatches (Discord's appearance settings, size 48) */
+.theme-swatches { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; padding: 2px; }
+.theme-swatch { position: relative; width: 48px; height: 48px; border-radius: 50%; padding: 0; cursor: pointer; display: grid; place-items: center; color: var(--text-strong);
+  border: 1px solid var(--border-strong, rgba(255,255,255,.2)); background-size: cover; }
+.theme-swatch.std { --custom-theme-base-color-amount: 0%; --custom-theme-text-color-amount: 0%; background: var(--background-base-low); }
+.theme-swatch.custom { color: #fff; }
+.theme-swatch.custom svg { filter: drop-shadow(0 0 2px rgba(0,0,0,.6)); }
+.theme-swatch:hover { box-shadow: 0 0 0 2px var(--border-strong, rgba(255,255,255,.3)); }
+.theme-swatch[aria-checked=true] { box-shadow: 0 0 0 2px var(--background-base-lowest), 0 0 0 4px var(--control-brand-foreground, #5865f2); }
+.theme-swatch[aria-checked=true]::after { content: ""; position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--control-brand-foreground, #5865f2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M8.99 15.58 5.7 12.3a1 1 0 0 0-1.4 1.42l4 4a1 1 0 0 0 1.4 0l10-10a1 1 0 0 0-1.4-1.42L9 15.58Z'/%3E%3C/svg%3E") center / 14px no-repeat; }
+.theme-swatch:focus-visible { outline: 2px solid var(--focus-primary, var(--text-link)); outline-offset: 3px; }
+.nitro-tag { display: inline-block; margin-left: 4px; padding: 0 6px; border-radius: 8px; font-size: 10px; line-height: 16px; font-weight: 700; color: #fff; background: linear-gradient(90deg, #8547c6, #b845c1 50%, #ab5d8a); vertical-align: 1px; }
+#customColors { align-items: center; margin-bottom: 12px; }
+
+.swatches { display: flex; gap: 6px; margin-bottom: 12px; }
+.swatch { border: 2px solid transparent; border-radius: 50%; padding: 0; background: none; cursor: pointer; width: 40px; height: 40px; overflow: hidden; }
+.swatch img { width: 100%; height: 100%; display: block; }
+.swatch:hover { border-color: var(--control-brand-foreground, var(--text-link)); }
+
+.grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-height: 300px; overflow-y: auto; margin-bottom: 12px; padding: 2px; }
+.grid.wide { grid-template-columns: repeat(3, 1fr); }
+.tile { aspect-ratio: 1; border: 2px solid transparent; border-radius: var(--radius-sm); background: var(--background-base-lower); padding: 2px; cursor: pointer; color: var(--text-muted); font: inherit; font-size: 12px; overflow: hidden; }
+.grid.wide .tile { aspect-ratio: 3 / 4; }
+.tile img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.tile:hover { border-color: var(--border-strong, #6d6f78); }
+.tile.selected { border-color: var(--control-brand-foreground, var(--text-link)); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { position: relative; cursor: pointer; }
+.chip input { position: absolute; opacity: 0; }
+.chip-none { display: grid; place-items: center; height: 28px; padding: 0 8px; border-radius: 6px; border: 2px solid transparent; background: var(--background-base-lower); font-size: 12px; color: var(--text-muted); opacity: .6; }
+.chip input:checked + .chip-none { opacity: 1; border-color: var(--control-brand-foreground, var(--text-link)); color: var(--text-strong); }
+#badges .chips { margin-bottom: 8px; }
+.chip img { width: 28px; height: 28px; padding: 3px; border-radius: 6px; border: 2px solid transparent; background: var(--background-base-lower); opacity: .4; display: block; }
+.chip input:checked + img { opacity: 1; border-color: var(--control-brand-foreground, var(--text-link)); }
+.chip input:focus-visible + img { outline: 2px solid var(--text-link); }
+
+.badges-grid { grid-template-columns: repeat(8, 1fr); gap: 4px; max-height: 190px; }
+.badge-tile { display: grid; place-items: center; }
+.badge-tile svg { width: 24px; height: 24px; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.preset { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; padding: 0; cursor: pointer; background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%); }
+.preset.selected, .preset:hover { border-color: var(--text-strong); }
+.widget-edit { background: var(--background-base-lower); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 8px 10px; margin-bottom: 10px; }
+.widget-edit .row { margin-bottom: 6px; align-items: center; }
+/* cover on the left, name and cover URL stacked so both get the full width (side by side they were cut to ~10 characters) */
+.game { display: grid; grid-template-columns: 51px minmax(0, 1fr) auto; grid-template-areas: "img name del" "img src up"; gap: 4px 6px; align-items: center; margin-bottom: 4px; }
+.game > img { grid-area: img; width: 51px; height: 68px; object-fit: cover; border-radius: 4px; background: var(--background-base-low); }
+.game > [data-f=name] { grid-area: name; }
+.game > [data-f=src] { grid-area: src; }
+.game > .file-mini { grid-area: up; text-align: center; }
+.game > [data-delg] { grid-area: del; }
+.panel .game input:not([type=file]) { height: 32px; padding: 0 8px; font-size: 13px; }
+.game-edit { border-top: 1px solid var(--border-subtle); padding: 6px 0 4px; }
+.game-edit:first-child { border-top: 0; }
+.panel .game-comment { height: 32px; padding: 0 8px; font-size: 13px; margin-bottom: 4px; }
+.tag-edit summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-muted); padding: 2px 0; }
+.tag-edit .sub { margin: 6px 0 4px; }
+.tag-opts { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag-opts label { position: relative; cursor: pointer; }
+.tag-opts input { position: absolute; opacity: 0; pointer-events: none; }
+.tag-opts span { display: block; font-size: 12px; padding: 3px 8px; border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-muted); }
+.tag-opts input:checked + span { border-color: var(--control-brand-foreground, var(--text-link)); color: var(--text-strong); background: var(--background-mod-subtle, rgba(255,255,255,.06)); }
+.tag-opts input:focus-visible + span { outline: 2px solid var(--text-link); }
+.file-mini { position: relative; overflow: hidden; }
+.file-mini input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.panel .game-search { margin: 4px 0 6px; }
+.game-results { display: flex; flex-direction: column; max-height: calc(7 * 40px); overflow-y: auto; margin-bottom: 8px; border-radius: var(--radius-sm); background: var(--background-surface-high, var(--background-base-lowest)); }
+.game-results:empty { display: none; }
+.game-results .sub { padding: 8px 10px; margin: 0; }
+.game-row { display: flex; align-items: center; gap: 10px; height: 40px; flex: 0 0 40px; padding: 0 10px; border: 0; background: none; color: var(--text-default); font: inherit; font-size: 15px; font-weight: 500; text-align: left; cursor: pointer; border-radius: 6px; }
+.game-row:hover:not(:disabled) { background: var(--background-mod-subtle, rgba(255,255,255,.06)); color: var(--text-strong); }
+.game-row:disabled { opacity: .5; cursor: default; }
+.game-row img, .game-row .game-noart { width: 24px; height: 24px; flex: 0 0 24px; border-radius: 6px; object-fit: cover; background: var(--background-base-low); }
+.game-row .game-noart { aspect-ratio: auto; font-size: 13px; }
+.game-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.game-hit { display: flex; flex-direction: column; gap: 3px; padding: 3px; border: 2px solid transparent; border-radius: 8px; background: var(--background-base-low); color: var(--text-default); cursor: pointer; font: inherit; font-size: 11px; text-align: left; min-width: 0; }
+.game-hit:hover { border-color: var(--text-link); }
+.game-hit img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; display: block; }
+.game-noart { width: 100%; aspect-ratio: 3 / 4; border-radius: 4px; display: grid; place-items: center; background: var(--background-base-lowest); color: var(--text-muted); font-size: 20px; font-weight: 700; }
+.game-hit span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wishes { margin-bottom: 10px; }
+.wish { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.wish img { width: 32px; height: 32px; object-fit: contain; }
+.wish span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-btn:disabled { opacity: .3; cursor: default; }
+.colors { display: flex; gap: 6px; flex-wrap: wrap; }
+#addConnection { margin-bottom: 16px; }
+.row.conn { flex-wrap: nowrap; align-items: center; }
+.conn select { flex: 0 0 150px; width: 150px; }
+.conn input { flex: 1 1 auto; min-width: 0; width: auto; }
+
+/* ---------- colour picker (Discord's customColorPicker_BorJ2C box; react-color saturation/hue look) ---------- */
+.dpe-picker { position: fixed; z-index: 100; box-sizing: border-box; }
+/* Discord's customColorPicker class sets display:flex, which beats the [hidden] attribute: without this it never closes */
+.dpe-picker[hidden] { display: none !important; }
+.dpe-sat { position: relative; height: 150px; border-radius: 4px; cursor: crosshair; touch-action: none; overflow: hidden; }
+.dpe-sat-white, .dpe-sat-black { position: absolute; inset: 0; }
+.dpe-sat-white { background: linear-gradient(to right, #fff, rgba(255,255,255,0)); }
+.dpe-sat-black { background: linear-gradient(to top, #000, rgba(0,0,0,0)); }
+.dpe-sat-ptr { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; box-shadow: 0 0 0 2px #fff, 0 0 2px 2px rgba(0,0,0,.4); pointer-events: none; }
+.dpe-hue { position: relative; height: 8px; border-radius: 2px; cursor: pointer; touch-action: none; margin: 0 9px;
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%); }
+.dpe-hue-ptr { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 50%; transform: translate(-9px, -50%); background: rgb(248, 248, 248); box-shadow: 0 1px 4px 0 rgba(0,0,0,.37); pointer-events: none; }
+.dpe-hex { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px; box-sizing: border-box; border-radius: var(--radius-sm);
+  background: var(--input-background-default); border: 1px solid var(--input-border-default, var(--border-subtle)); color: var(--text-muted); font-size: 14px; }
+.dpe-hex:focus-within { border-color: var(--input-border-active, var(--text-link)); }
+.dpe-hex input { flex: 1; min-width: 0; width: 100%; border: 0; background: none; outline: none; padding: 0; font: inherit; color: var(--input-text-default, var(--text-default)); text-transform: uppercase; }
+.dpe-drop { background: none; border: 0; padding: 0; color: var(--interactive-icon-default, var(--text-muted)); }
+.dpe-drop:hover { color: var(--interactive-hover, var(--text-strong)); }
+.panel input[type=color]::-moz-color-swatch { border: 0; border-radius: 4px; }
+.panel input[type=color]::-webkit-color-swatch { border: 0; border-radius: 4px; }
+.panel input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+
+/* ---------- unofficial notice ---------- */
+.notice { margin: 12px 12px 0; padding: 0 4px; font-size: 12px; line-height: 16px; color: var(--text-muted); }
+.lang { margin-left: auto; }
+.panel .lang select { height: 28px; width: auto; padding: 0 28px 0 8px; font-size: 13px; background-position: right 8px center; }
+
+/* ---------- stage ---------- */
+/* "Aplikacja" = Discord's chat surface; with a Nitro colour theme that is the gradient under the chat overlay */
+.stage { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--background-gradient-chat, var(--background-base-low)); }
+.stage[data-bg=backdrop]::before { content: ""; position: absolute; inset: 0; background: var(--opacity-black-70, rgba(0, 0, 0, .7)); }
+.stage[data-bg=checker] { background: repeating-conic-gradient(#2b2b30 0 25%, #1e1e22 0 50%) 0 0 / 24px 24px; }
+.preview { position: relative; }
+.zoom-label { position: absolute; right: 12px; bottom: 10px; font-size: 12px; color: var(--text-muted); }
+
+/* Discord sizes the v2 modal from the window (vw/vh media queries). The preview pane is narrower than the
+   window, so pin the values Discord uses on a desktop window (>=1169x896) and scale with zoom instead. */
+.preview .root_ZhNJfE {
+  --custom-modal-v2-width: 962px; --custom-modal-v2-max-width: none; --custom-modal-v2-height: 800px;
+  --custom-modal-v2-profile-width: 400px; --custom-modal-v2-editing-panel-width: calc(var(--custom-modal-v2-editing-panel-inner-width) + 2px);
+  margin-block: 0; width: var(--custom-modal-v2-width);
+}
+
+@media (max-width: 760px) {
+  body { overflow: auto; }
+  .editor { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; height: auto; }
+  /* stage shaped like the full profile modal (962x800 + padding), so the scaled preview isn't lost in empty space */
+  .stage { height: clamp(320px, 84.2vw, 80vh); min-width: 0; }
+  .panel { border-right: 0; border-bottom: 1px solid var(--border-subtle); max-height: none; }
+}
