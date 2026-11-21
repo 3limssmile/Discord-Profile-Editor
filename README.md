@@ -53,8 +53,8 @@ The editor deliberately offers no "paste this script" way around that limit:
 It's a static site with no build step and no backend:
 
 ```sh
-git clone https://github.com/3limssmile/discord-profile-editor
-cd discord-profile-editor
+git clone https://github.com/3limssmile/Discord-Profile-Editor
+cd Discord-Profile-Editor
 python -m http.server 5173
 ```
 
