@@ -273,3 +273,8 @@ body { background: var(--background-gradient-lowest, var(--background-base-lowes
   .stage { height: clamp(320px, 84.2vw, 80vh); min-width: 0; }
   .panel { border-right: 0; border-bottom: 1px solid var(--border-subtle); max-height: none; }
 }
+
+.timestamp_ku1OHH { background-color: var(--background-mod-normal); border-radius: 3px; padding: 0 2px; }
+.markup_ku1OHH .emoji { object-fit: contain; width: 1.375em; height: 1.375em; vertical-align: bottom; }
+.tabListScroller_y4ZEM5 { margin-block-end: -4px; scrollbar-width: none; }
+.tabListScroller_y4ZEM5::-webkit-scrollbar { display: none; }

@@ -137,15 +137,58 @@
   }
 
   // ---------------------------------------------------------------- bio markup (subset of Discord markdown)
+  // timestamps <t:unix:style>, formatted like Discord's moment formats (LT, LTS, L, LL, LLL, LLLL, relative)
+  const uiLang = () => (global.I18N && global.I18N.lang === "pl" ? "pl" : "en");
+  function relativeTime(sec) {
+    const pl = uiLang() === "pl", future = sec >= 0, a = Math.abs(sec);
+    const plForm = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? few : many;
+    const U = pl
+      ? { s: "kilka sekund", m: "minutę", mm: n => `${n} ${plForm(n, "minuta", "minuty", "minut")}`, h: "godzinę", hh: n => `${n} ${plForm(n, "godzina", "godziny", "godzin")}`,
+        d: "1 dzień", dd: n => `${n} dni`, M: "miesiąc", MM: n => `${n} ${plForm(n, "miesiąc", "miesiące", "miesięcy")}`, y: "rok", yy: n => `${n} ${plForm(n, "rok", "lata", "lat")}` }
+      : { s: "a few seconds", m: "a minute", mm: n => `${n} minutes`, h: "an hour", hh: n => `${n} hours`,
+        d: "a day", dd: n => `${n} days`, M: "a month", MM: n => `${n} months`, y: "a year", yy: n => `${n} years` };
+    const min = a / 60, hr = min / 60, day = hr / 24, mon = day / 30.4375, yr = day / 365.25;
+    const r = Math.round;
+    const s = a < 45 ? U.s : a < 90 ? U.m : min < 45 ? U.mm(r(min)) : min < 90 ? U.h : hr < 22 ? U.hh(r(hr))
+      : hr < 36 ? U.d : day < 26 ? U.dd(r(day)) : day < 45 ? U.M : day < 320 ? U.MM(Math.max(2, r(mon))) : day < 548 ? U.y : U.yy(Math.max(2, r(yr)));
+    return pl ? (future ? `za ${s}` : `${s} temu`) : (future ? `in ${s}` : `${s} ago`);
+  }
+  function timestamp(unix, style) {
+    const d = new Date(unix * 1000);
+    if (isNaN(d)) return null;
+    const loc = uiLang() === "pl" ? "pl-PL" : "en-US";
+    const f = o => new Intl.DateTimeFormat(loc, o).format(d);
+    const time = f({ hour: "numeric", minute: "2-digit" }), long = f({ day: "numeric", month: "long", year: "numeric" });
+    switch (style) {
+      case "t": return time;
+      case "T": return f({ hour: "numeric", minute: "2-digit", second: "2-digit" });
+      case "d": return f({ day: "2-digit", month: "2-digit", year: "numeric" });
+      case "D": return long;
+      case "F": return `${f({ weekday: "long" })}, ${long} ${time}`;
+      case "R": return relativeTime(unix - Date.now() / 1000);
+      default: return `${long} ${time}`;
+    }
+  }
+  // unicode emoji in text become twemoji images, as Discord renders them in markup
+  const EMOJI_RE = /\p{RI}\p{RI}|[#*0-9]️?⃣|\p{Extended_Pictographic}(?:️|\p{EMod})?(?:‍\p{Extended_Pictographic}(?:️|\p{EMod})?)*/gu;
+  const markupEmoji = e => {
+    const cp = [...e].map(c => c.codePointAt(0).toString(16)).filter(h => h !== "fe0f").join("-");
+    return `<img aria-label="${e}" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${cp}.svg" alt="${e}" draggable="false" class="emoji" data-type="emoji">`;
+  };
+  const SHORTCODES = global.DISCORD_EMOJI || {};
   function bioMarkup(text) {
-    const lines = esc(text).split("\n");
-    const inline = s => s
+    const lines = esc(text)
+      .replace(/:([\w+-]+):/g, (m, n) => SHORTCODES[n] || m)
+      .replace(/&lt;t:(-?\d{1,13})(?::([tTdDfFR]))?&gt;/g, (m, n, st) => { const v = timestamp(+n, st); return v ? `<span class="timestamp_ku1OHH">${esc(v)}</span>` : m; })
+      .split("\n");
+    const emojify = s => s.split(/(<[^>]+>)/).map(seg => seg[0] === "<" ? seg : seg.replace(EMOJI_RE, markupEmoji)).join("");
+    const inline = s => emojify(s
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*])\*(?!\s)(.+?)\*/g, "$1<em>$2</em>")
       .replace(/__(.+?)__/g, "<u>$1</u>")
       .replace(/~~(.+?)~~/g, "<s>$1</s>")
       .replace(/`([^`]+)`/g, '<code class="inlineCode_ku1OHH">$1</code>')
-      .replace(/(https?:\/\/[^\s<]+)/g, '<a class="anchor_R6ReNl anchorUnderlineOnHover_R6ReNl" href="$1" rel="noreferrer noopener" target="_blank" title="$1" role="link" tabindex="0"><span>$1</span></a>');
+      .replace(/(https?:\/\/[^\s<]+)/g, '<a class="anchor_R6ReNl anchorUnderlineOnHover_R6ReNl" href="$1" rel="noreferrer noopener" target="_blank" title="$1" role="link" tabindex="0"><span>$1</span></a>'));
     return lines.map(inline).join("\n");
   }
   function section(title, body, id) {
